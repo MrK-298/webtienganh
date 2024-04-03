@@ -1,10 +1,9 @@
 <?php
-require_once(dirname(__DIR__) . '/database/mongodb_connection.php');
-require_once(dirname(__DIR__) . '/function/generateJWT.php');
+require '../../database/mongodb_connection.php';
+require '../../function/generateJWT.php';
 $collection = connectToMongoDB("WebTiengAnh","User");
 function verifyCredentials($usernameOrEmail, $password) {
     global $collection;
-
     $user = $collection->findOne([
         '$or' => [
             ['username' => $usernameOrEmail],
@@ -17,7 +16,6 @@ function verifyCredentials($usernameOrEmail, $password) {
             return true;
         }
     }
-
     return false;
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -31,8 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ['email' => $usernameOrEmail]
             ]
         ]);
-        $token = generateJWT($user['username'],$user['email']);
-        $response = array('success' => true, 'message' => 'Đăng nhập thành công.', 'token' => $token);
+        $token = generateJWT($user['_id'],$user['username'],$user['email'].$user['image']);
+        setcookie('token', $token, time() + (3600), "/");    
+        $response = array('success' => true, 'token' => $token);
+        header('Location:../../views/home.php');
     } else {
         $response = array('success' => false, 'message' => 'Đăng nhập thất bại. Vui lòng kiểm tra tên người dùng và mật khẩu.');
     }

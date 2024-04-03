@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__DIR__) . '/database/mongodb_connection.php');
+require '../../database/mongodb_connection.php';
 $collection = connectToMongoDB("WebTiengAnh","User");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -13,16 +13,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'username' => $username,
             'password' => password_hash($password, PASSWORD_DEFAULT),
             'email' => $email,
+            'image' => null,
+            'verificationCode' => null
         ];
         $result = $collection->insertOne($newUser);
-        session_start();   
         if ($result->getInsertedCount() === 1) {
-            $_SESSION['success_message'] = "Đăng ký thành công.";
+            $response = array('success' => true,'user' =>$newUser);
         } else {
-            $_SESSION['error_message'] = "Đăng ký thất bại.";
-        }
-        header("Location: ../views/loginview.php");
-        exit();      
+            $response = array('success' => false,'message' =>'Đăng ký thất bại');
+        }     
     }
 }
 ?>
