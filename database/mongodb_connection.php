@@ -1,6 +1,6 @@
 <?php
 function connectToMongoDB($database,$collection) {
-    require_once(dirname(__DIR__) . '/vendor/autoload.php');
+    require '../../vendor/autoload.php';
     try {
         $mongoClient = new MongoDB\Client('mongodb+srv://khoinguyen29082002:khoibia123@hoangkhoi.9ehzu5m.mongodb.net/');
         $Database = $mongoClient->selectDatabase($database);
