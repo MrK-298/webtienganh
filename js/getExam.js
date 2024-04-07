@@ -1,3 +1,4 @@
+
 window.onload = async function() {
     fetch('http://localhost:8084/webtienganh/api/exam/getExam.php')
     .then(response => response.json())
@@ -27,12 +28,16 @@ window.onload = async function() {
           questionButton.setAttribute("id",questionId)
           questionButton.textContent = count++;
           questionButton.addEventListener('click', () => {
+              document.getElementById('part5').setAttribute("style","display:block");
+              document.getElementById('part7').setAttribute("style","display:none");
+              document.getElementById('next').setAttribute("style","display:block");
+              document.getElementById('previous').setAttribute("style","display:none");
               const subQuestionElement = document.getElementById(questionId);
               subQuestionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
           subQuestionLi.appendChild(questionButton)
           listitem.appendChild(subQuestionLi);     
-          document.getElementById('quiz-container').appendChild(questionDiv);
+          document.getElementById('part5').appendChild(questionDiv);
       });
       questionListDiv.appendChild(listitem);
       //part 7
@@ -65,6 +70,10 @@ window.onload = async function() {
               subQuestionButton.setAttribute("id",subQuestionId);
               subQuestionButton.textContent = count++;
               subQuestionButton.addEventListener('click', () => {
+                  document.getElementById('part5').setAttribute("style","display:none");
+                  document.getElementById('part7').setAttribute("style","display:block");
+                  document.getElementById('previous').setAttribute("style","display:block");
+                  document.getElementById('next').setAttribute("style","display:none");
                   const subQuestionElement = document.getElementById(subQuestionId);
                   subQuestionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
               });
@@ -72,7 +81,7 @@ window.onload = async function() {
               listitem.appendChild(subQuestionLi);
               questionDiv.appendChild(subQuestionDiv);               
           });      
-          document.getElementById('quiz-container').appendChild(questionDiv);
+          document.getElementById('part7').appendChild(questionDiv);
       });           
       questionListDiv.appendChild(listitem);
       const inputElements = document.querySelectorAll('#quiz-container input[type="radio"]');
