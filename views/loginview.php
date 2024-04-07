@@ -47,7 +47,7 @@
               <form id="signup-form" method="post">
                 <div class="input-box">
                     <i class="fas fa-user"></i>
-                    <input type="text" name="username" id="username" placeholder="Nhập họ và tên" required>
+                    <input type="text" name="username" id="username" placeholder="Nhập username" required>
                 </div>
                 <div class="input-box">
                     <i class="fas fa-envelope"></i>

@@ -19,6 +19,7 @@ function verifyCredentials($usernameOrEmail, $password) {
     return false;
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    session_start();
     $usernameOrEmail = $_POST['username'];
     $password = $_POST['password'];
 
@@ -28,13 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ['username' => $usernameOrEmail],
                 ['email' => $usernameOrEmail]
             ]
-        ]);
-        $token = generateJWT($user['_id'],$user['username'],$user['email'].$user['image']);
-        setcookie('token', $token, time() + (3600), "/");    
-        $response = array('success' => true, 'token' => $token);
+        ]);      
+        $token = generateJWT($user['username'],$user['email'],$user['image']);    
+        $_SESSION['login']['token'] = $token;
+        $response = ['success' => true, 'token' => $token];
         header('Location:../../views/home.php');
     } else {
-        $response = array('success' => false, 'message' => 'Đăng nhập thất bại. Vui lòng kiểm tra tên người dùng và mật khẩu.');
+        $response = ['success' => false, 'message' => 'Đăng nhập thất bại. Vui lòng kiểm tra tên người dùng và mật khẩu.'];
     }
     header('Content-Type: application/json');
     echo json_encode($response);

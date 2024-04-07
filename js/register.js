@@ -3,8 +3,8 @@ window.onload = async function() {
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;
         var confirmPassword = document.getElementById('confirmpassword').value;
-        if (username.length < 8) {
-            alert('Họ và tên phải có ít nhất 8 ký tự.');
+        if (username.length < 6) {
+            alert('username phải có ít nhất 6 ký tự.');
             event.preventDefault();
             return;
         }
@@ -25,10 +25,11 @@ window.onload = async function() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.success == true) {               
+                alert("Đăng ký tài khoản thành công");
                 window.location.href = '../views/loginview.php';
             } else {
-                alert(data.message);
+                alert(data.message,data.error);
             }
         })
         .catch(error => {

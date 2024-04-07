@@ -43,25 +43,31 @@
                                     <h2 class="text-center">Quên mật khẩu?</h2>
                                     <p>Bạn có thể đặt lại mật khẩu của bạn ở đây.</p>
                                     <div class="panel-body">
-                                        <form id="register-form" role="form" autocomplete="off" class="form" method="post">
+                                        <form id="forgot-form" role="form" autocomplete="off" class="form" method="puy">
                                             <div class="form-group">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
                                                     <input id="email" name="email" placeholder="Nhập email của bạn" class="form-control" type="email">
                                                 </div>
-                                                <div class="input-group" style="display:none">
+                                                <div class="input-group" style="display:none" id="verificationCode-form">
                                                     <span class="input-group-addon"><i class="fas fa-lock"></i></span>
-                                                    <input name="password" class="form-control" placeholder="Nhập mật khẩu của bạn">                                                  
+                                                    <input id="verificationCode" name="verificationCode" class="form-control" placeholder="Nhập mã xác minh">                                                  
                                                 </div>
-                                                <div class="input-group" style="display:none">
+                                                <div class="input-group" style="display:none" id="password-form">
                                                     <span class="input-group-addon"><i class="fas fa-lock"></i></span>
-                                                    <input name="confirmpassword" class="form-control" placeholder="Xác nhận mật khẩu của bạn">                                                  
+                                                    <input id="password" name="password" class="form-control" placeholder="Nhập mật khẩu của bạn">                                                  
+                                                </div>
+                                                <div class="input-group" style="display:none" id="confirmpassword-form">
+                                                    <span class="input-group-addon"><i class="fas fa-lock"></i></span>
+                                                    <input id="confirmpassword" name="confirmpassword" class="form-control" placeholder="Xác nhận mật khẩu của bạn">                                                  
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit">
+                                                <input id="send-code-btn" name="send-code" class="btn btn-lg btn-primary btn-block" value="Send code" type="Send Code">
                                             </div>
-                                            <input type="hidden" class="hide" name="token" id="token" value="">
+                                            <div class="form-group">
+                                                <input id="recover-btn" name="recover-btn" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="Reset Password">
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -72,4 +78,5 @@
             </div>
         </div>
     </body>
+    <script src="../js/forgotpw.js"></script>
 </html>
