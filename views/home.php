@@ -107,12 +107,8 @@ session_start();
 							<div class="col-lg-2 col-12">
 								<div class="get-quote">
                                     <?php
-									  require '../../function/generateJWT.php';
-                                      if(isset($_SESSION['login']['token'])) {
-										$token = $_SESSION['login']['token'];
-										$decodetoken = decodeJWT($token);
-										$username = $decodetoken['username'];
-                                        echo "Xin chào <b>{$username}</b>";
+                                      if(isset($_SESSION['login']['username'])) {
+										echo "Xin chào <b>{$_SESSION['login']['username']}</b>";
 										echo '<a href="../function/logout.php" class="btn">Logout</a>';
                                        }else {
                                         echo '<a href="loginview.php" class="btn">Login</a>';

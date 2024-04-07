@@ -1,6 +1,5 @@
 <?php
 require '../../database/mongodb_connection.php';
-require '../../function/generateJWT.php';
 $collection = connectToMongoDB("WebTiengAnh","User");
 function verifyCredentials($usernameOrEmail, $password) {
     global $collection;
@@ -29,10 +28,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ['username' => $usernameOrEmail],
                 ['email' => $usernameOrEmail]
             ]
-        ]);      
-        $token = generateJWT($user['username'],$user['email'],$user['image']);    
-        $_SESSION['login']['token'] = $token;
-        $response = ['success' => true, 'token' => $token];
+        ]);         
+        $_SESSION['login']['username'] = $user['username'];
+        $_SESSION['login']['email'] = $user['email'];
+        $_SESSION['login']['image'] = $user['image'];
+        $response = ['success' => true, 'data'=>$user];
         header('Location:../../views/home.php');
     } else {
         $response = ['success' => false, 'message' => 'Đăng nhập thất bại. Vui lòng kiểm tra tên người dùng và mật khẩu.'];
