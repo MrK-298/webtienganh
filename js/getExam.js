@@ -1,6 +1,7 @@
-
 window.onload = async function() {
-    fetch('http://localhost:8084/webtienganh/api/exam/getExam.php')
+    const urlParams = new URLSearchParams(window.location.search);
+    const examName = urlParams.get('examname');
+    fetch(`http://localhost:8084/webtienganh/api/exam/getExam.php?examname=${examName}`)
     .then(response => response.json())
     .then(data => {
       console.log(data);
@@ -88,14 +89,37 @@ window.onload = async function() {
       inputElements.forEach(input => {
           input.addEventListener('change', () => {
               const subQuestionId = input.getAttribute("id");
+              const selectedAnswer = input.value;
               const button = document.querySelector(`#question-list button[id="${subQuestionId}"]`);
+              saveSelectedAnswer(subQuestionId,selectedAnswer);
               if (button) {
                   button.setAttribute("style","background-color:aqua");
               }
           });
       });
+      if(localStorage.length !== 0) {
+        setSelectedAnswersFromLocalStorage();
+      }
     })
     .catch(error => {
       console.error('Error:', error);
     });
 };
+function saveSelectedAnswer(questionId, selectedAnswer) {
+    localStorage.setItem(questionId, selectedAnswer);
+}
+function setSelectedAnswersFromLocalStorage() {
+    var questionElements = document.querySelectorAll('.question');
+    questionElements.forEach(function(questionElement) {
+        var questionId = questionElement.getAttribute('id');
+        const button = document.querySelector(`#question-list button[id="${questionId}"]`);
+        var selectedAnswer = localStorage.getItem(questionId);
+        if (selectedAnswer !== null) {
+            var answerElement = questionElement.querySelector('input[type="radio"][value="' + selectedAnswer + '"]');
+            if (answerElement !== null) {
+                answerElement.checked = true;
+                button.setAttribute("style","background-color:aqua");
+            }
+        }
+    });
+}

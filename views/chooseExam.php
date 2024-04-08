@@ -117,107 +117,7 @@
 		<section class="contact-us section">
 			<div class="container">
 				<div class="contact-info">
-					<div class="row">
-						<!-- Listening 1 -->
-						<div class="col-lg-4 col-12 ">
-							<div class="single-info">
-								<div class="content">
-									<i class="fas fa-headphones-alt"></i>
-									<h3>Listening</h3>
-									<p>Part 1</p>
-								</div>
-							</div>
-						</div>
-						<!--/End Listening 1 -->
-						<!-- Reading 1 -->
-						<div class="col-lg-4 col-12 ">
-							<div class="single-info">
-								<i class="fas fa-book-open"></i>
-								<div class="content">
-									<h3>Reading</h3>
-									<p>Part 1</p>
-								</div>
-							</div>
-						</div>
-						<!--/End Reading 1 -->
-						<!-- All Skill 1 -->
-						<div class="col-lg-4 col-12 ">
-							<div class="single-info">
-								<i class="fas fa-tasks"></i>
-								<div class="content">
-									<h3>All Skill</h3>
-									<p>Part 1</p>
-								</div>
-							</div>
-						</div>
-						<!--/End All Skill 1 -->
-
-						<!-- Listening 2 -->
-						<div class="col-lg-4 col-12 " style="margin-top: 20px;" >
-							<div class="single-info">
-								<div class="content">
-									<i class="fas fa-headphones-alt"></i>
-									<h3>Listening</h3>
-									<p>Part 2</p>
-								</div>
-							</div>
-						</div>
-						<!--/End Listening 2 -->
-						<!-- Reading 2 -->
-						<div class="col-lg-4 col-12 " style="margin-top: 20px;" >
-							<div class="single-info">
-								<i class="fas fa-book-open"></i>
-								<div class="content">
-									<h3>Reading</h3>
-									<p>Part 2</p>
-								</div>
-							</div>
-						</div>
-						<!--/End Reading 2 -->
-						<!-- All Skill 2 -->
-						<div class="col-lg-4 col-12 " style="margin-top: 20px;" >
-							<div class="single-info">
-								<i class="fas fa-tasks"></i>
-								<div class="content">
-									<h3>All Skill</h3>
-									<p>Part 2</p>
-								</div>
-							</div>
-						</div>
-						<!--/End All Skill 2 -->
-						<!-- Listening 3-->
-						<div class="col-lg-4 col-12 " style="margin-top: 20px;" >
-							<div class="single-info">
-								<div class="content">
-									<i class="fas fa-headphones-alt"></i>
-									<h3>Listening</h3>
-									<p>Part 3</p>
-								</div>
-							</div>
-						</div>
-						<!--/End Listening 3 -->
-						<!-- Reading 3 -->
-						<div class="col-lg-4 col-12 " style="margin-top: 20px;" >
-							<div class="single-info">
-								<i class="fas fa-book-open"></i>
-								<div class="content">
-									<h3>Reading</h3>
-									<p>Part 3</p>
-								</div>
-							</div>
-						</div>
-						<!--/End Reading 3 -->
-						<!-- All Skill 3 -->
-						<div class="col-lg-4 col-12 " style="margin-top: 20px;" >
-							<div class="single-info">
-								<i class="fas fa-tasks"></i>
-								<div class="content">
-									<h3>All Skill</h3>
-									<p>Part 3</p>
-								</div>
-							</div>
-						</div>
-						<!--/End All Skill 3 -->
+					<div class="row" id="list-exam">																				
 					</div>
 				</div>
 			</div>
@@ -339,5 +239,6 @@
 		<script src="../homejs/bootstrap.min.js"></script>
 		<!-- Main JS -->
 		<script src="../homejs/main.js"></script>
+		<script src="../js/gelAllExam.js"></script>
     </body>
 </html>

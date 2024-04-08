@@ -1,27 +1,40 @@
 async function submitAnswers() {
-    let correctAnswers = 0;
-    const response = await fetch('http://localhost:3000/api/v1/exams/');
-    if (!response.ok) {
-        throw new Error('Không thể lấy dữ liệu từ API');
-    }
-    console.log('API thành công');
-    const examData = await response.json();
-    examData.Questions.forEach((question, index) => {
-        question.SubQuestions.forEach((subQuestion, subIndex) => {
-            const selectedAnswers = document.querySelectorAll(`input[name="question${index + 1}_${subIndex + 1}"]:checked`);
+    var correctAnswers = 0;
+    var totalQuestions = 0;
+    
+    fetch('http://localhost:8084/webtienganh/api/exam/getExam.php')
+    .then(response => response.json())
+    .then(data => {
+        const part7Questions = data.Questions.filter(question => question.type === "Part 7");
+        part7Questions.forEach((question, index) => {
+            question.SubQuestions.forEach((subQuestion, subIndex) => {
+                totalQuestions++;
+                const selectedAnswers = document.querySelectorAll(`input[name="question${index + 1}_${subIndex + 1}"]:checked`);
+                selectedAnswers.forEach(selectedAnswer => {
+                    const selectedValue = selectedAnswer.value;
+                    const correctAnswer = subQuestion.Answers.find(answer => answer.text === selectedValue);
+                    if (correctAnswer && correctAnswer.isTrue) {
+                        correctAnswers++;
+                    }
+                });
+            });
+        });
+    
+        const part5Questions = data.Questions.filter(question => question.type === "Part 5");
+        part5Questions.forEach((question, index) => {
+            totalQuestions++;
+            const selectedAnswers = document.querySelectorAll(`input[name="question${index + 1}"]:checked`);
             selectedAnswers.forEach(selectedAnswer => {
                 const selectedValue = selectedAnswer.value;
-                const correctAnswer = subQuestion.Answers.find(answer => answer.text === selectedValue);
+                const correctAnswer = question.Answers.find(answer => answer.text === selectedValue);
                 if (correctAnswer && correctAnswer.isTrue) {
                     correctAnswers++;
                 }
             });
         });
-    });    
-    let totalSubQuestions = examData.Questions.reduce((acc, question) => {
-        return acc + question.SubQuestions.length;
-    }, 0);   
-    alert(`Số câu trả lời đúng: ${correctAnswers}/${totalSubQuestions}`);
+        alert(`Số câu bạn đã trả lời đúng là: ${correctAnswers} trong tổng số ${totalQuestions} câu.`);
+    });
+    
 }
 const submitButton = document.getElementById('submit-button');
 submitButton.addEventListener('click', submitAnswers);
