@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +11,11 @@
 <link rel="stylesheet" href="../css/exam.css">
 </head>
 <body>
+<?php
+if(isset($_SESSION['login']['email'])) {
+    echo '<div value="' . $_SESSION['login']['email'] . '" style="display:none" id="email"></div>';
+}                                
+?>        
 <div id="quiz-container">
 <div id="part5"></div>
 <div id="part7" style="display:none"></div>

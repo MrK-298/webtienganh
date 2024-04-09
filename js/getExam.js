@@ -4,7 +4,6 @@ window.onload = async function() {
     fetch(`http://localhost:8084/webtienganh/api/exam/getExam.php?examname=${examName}`)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       const questionListDiv = document.getElementById('question-list');
       const listitem = document.createElement('ul');
       let count = 1;
@@ -57,6 +56,7 @@ window.onload = async function() {
               const subQuestionId = `${index + 1}_${subIndex + 1}`;                          
               const subQuestionDiv = document.createElement('div');
               subQuestionDiv.classList.add('sub-question');
+              subQuestionDiv.setAttribute('id',subQuestionId);
               subQuestionDiv.innerHTML = `
                   <p>${subQuestion.text}</p>
                   <div class="options">
@@ -98,7 +98,8 @@ window.onload = async function() {
           });
       });
       if(localStorage.length !== 0) {
-        setSelectedAnswersFromLocalStorage();
+        setSelectedAnswersFromPart5();
+        setSelectedAnswersFromPart7();
       }
     })
     .catch(error => {
@@ -108,8 +109,23 @@ window.onload = async function() {
 function saveSelectedAnswer(questionId, selectedAnswer) {
     localStorage.setItem(questionId, selectedAnswer);
 }
-function setSelectedAnswersFromLocalStorage() {
+function setSelectedAnswersFromPart5() {
     var questionElements = document.querySelectorAll('.question');
+    questionElements.forEach(function(questionElement) {
+        var questionId = questionElement.getAttribute('id');
+        const button = document.querySelector(`#question-list button[id="${questionId}"]`);
+        var selectedAnswer = localStorage.getItem(questionId);
+        if (selectedAnswer !== null) {
+            var answerElement = questionElement.querySelector('input[type="radio"][value="' + selectedAnswer + '"]');
+            if (answerElement !== null) {
+                answerElement.checked = true;
+                button.setAttribute("style","background-color:aqua");
+            }
+        }
+    });
+}
+function setSelectedAnswersFromPart7() {
+    var questionElements = document.querySelectorAll('.sub-question');
     questionElements.forEach(function(questionElement) {
         var questionId = questionElement.getAttribute('id');
         const button = document.querySelector(`#question-list button[id="${questionId}"]`);

@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!doctype html>
 <html class="no-js" lang="zxx">
     <head>
@@ -93,7 +96,15 @@
 							</div>
 							<div class="col-lg-2 col-12">
 								<div class="get-quote">
-									<a href="viewexam/chooseExam.html" class="btn">Login</a>
+								<?php
+									if(isset($_SESSION['login']['email'])) {
+										echo '<div value="' . $_SESSION['login']['email'] . '" style="display:none" id="email"></div>';
+									} 
+									else       
+									{
+										echo'<a href="../views/loginview.php" class="btn">Login</a>';
+									}                        
+								?>
 								</div>
 							</div>
 						</div>
