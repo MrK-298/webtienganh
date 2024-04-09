@@ -13,30 +13,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $exam = $collectionExam->findOne(['name' => $examname]);
         $arrJSON = $post_data['arr'];
         $arr = json_decode($arrJSON, true);
-        if($arr)
-        {
-            $newdetail = [
-                'userId' => $user['_id'],
-                'examId' => $exam['_id'],
-                'Answer' => $arr
-            ];
-            header('Content-Type: application/json');
-            $result = $detailExam->insertOne($newdetail);
-            if ($result->getInsertedCount() === 1) {
-                $response = ['success' => true, 'detailExam' => $newdetail];
-                header("HTTP/1.0 200 success");
-            } else {
-                $response = ['success' => false, 'message' => 'Nộp bài thất bại', 'error' => 'Unknown error'];
-                header("HTTP/1.0 404 error");
-            }
-        }
-        else
-        {
-            $response = ['success' => false, 'message' => 'Nộp bài thất bại', 'error' => 'Unknown error'];
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $currentDateTime = new DateTime();
+        $createAt = $currentDateTime->format('Y-m-d H:i:s');;
+        $filter = [
+            'userId' => $user['_id'],
+            'examId' => $exam['_id']
+        ];        
+        $update = [
+            '$set' => [
+                'Answers' => $arr,
+                'create_at' => $createAt
+            ]
+        ];       
+        $options = [
+            'upsert' => true,
+        ];      
+        $result = $detailExam->findOneAndUpdate($filter, $update, $options);     
+        if ($result) {
+            $response = ['success' => true, 'detailExam' => $result];
+            header("HTTP/1.0 200 success");
+        } else {
+            $response = ['success' => true, 'message' => 'Nộp bài thành công'];
             header("HTTP/1.0 404 error");
-        }
-        echo json_encode($response);
-    } catch (Exception $e) {
+        }        
+        echo json_encode($response);       
+    }
+    catch (Exception $e) {
         $response = ['success' => false, 'message' => 'Nộp bài thất bại', 'error' => $e->getMessage()];
         echo json_encode($response);
         header("HTTP/1.0 404 error");
