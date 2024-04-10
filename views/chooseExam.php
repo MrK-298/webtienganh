@@ -74,16 +74,20 @@ session_start();
 								<!-- Main Menu -->
 								<div class="main-menu">
 									<nav class="navigation">
-										<ul class="nav menu">
-											<li class="active"><a href="#">Home <i class="icofont-rounded-down"></i></a></li>
-											<li><a href="#">Doctos </a></li>
-											<li><a href="#">Services </a></li>
-											<li><a href="#">Pages <i class="icofont-rounded-down"></i></a>
+									<ul class="nav menu">
+											<li class="active"><a href="#">Home <i class="fas fa-chevron-down"></i></a>
 												<ul class="dropdown">
-													<li><a href="404.html">404 Error</a></li>
+													<li><a href="index.html">Home Page 1</a></li>
 												</ul>
 											</li>
-											<li><a href="#">Blogs <i class="icofont-rounded-down"></i></a>
+											<li><a href="#">Grammar </a></li>
+											<li><a href="#">Vocabulary </a></li>
+											<li><a href="#">Test <i class="fas fa-chevron-down"></i></a>
+												<ul class="dropdown">
+													<li><a href="chooseExam.php">Test</a></li>
+												</ul>
+											</li>
+											<li><a href="#">Blogs <i class="fas fa-chevron-down"></i></a>
 												<ul class="dropdown">
 													<li><a href="blog-single.html">Blog Details</a></li>
 												</ul>
