@@ -13,18 +13,17 @@ session_start();
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+		<link rel="icon" href="../homejs/jquery.nav.js">
 		<!-- Favicon -->
         <link rel="icon" href="../img/img/favicon.png">
 		<!-- Google Fonts -->
-		<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
-		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css">
 		<!-- Nice Select CSS -->
 		<link rel="stylesheet" href="../css/nice-select.css">
 		<!-- Font Awesome CSS -->
         <link rel="stylesheet" href="../css/font-awesome.min.css">
-		<!-- icofont CSS -->
-        <link rel="stylesheet" href="../css/icofont.css">
+		<!-- icofont CSS 
+		<link rel="stylesheet" href="../css/icofont.css">-->
 		<!-- Slicknav -->
 		<link rel="stylesheet" href="../css/slicknav.min.css">
 		<!-- Owl Carousel CSS -->
@@ -262,7 +261,7 @@ session_start();
 		<!-- Bootstrap Datepicker JS -->
 		<script src="../homejs/bootstrap-datepicker.js"></script>
 		<!-- Jquery Nav JS -->
-        <script src="../homes/jquery.nav.js"></script>
+        <script src="../homejs/jquery.nav.js"></script>
 		<!-- Slicknav JS -->
 		<script src="../homejs/slicknav.min.js"></script>
 		<!-- ScrollUp JS -->
@@ -282,7 +281,7 @@ session_start();
 		<!-- Magnific Popup JS -->
 		<script src="../homejs/jquery.magnific-popup.min.js"></script>
 		<!-- Counter Up CDN JS -->
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+		
 		<!-- Bootstrap JS -->
 		<script src="../homejs/bootstrap.min.js"></script>
 		<!-- Main JS -->
