@@ -13,6 +13,10 @@ session_start();
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+		<!-- Favicon -->
+        <link rel="icon" href="../img/img/favicon.png">
+		<!-- Google Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css">
 		<!-- Nice Select CSS -->
@@ -38,6 +42,7 @@ session_start();
 		
     </head>
     <body>
+
 		<!-- Preloader -->
         <div class="preloader">
             <div class="loader">
@@ -53,17 +58,22 @@ session_start();
             </div>
         </div>
         <!-- End Preloader -->
+		<?php
+			if(isset($_SESSION['login']['email'])) {
+				echo '<div value="' . $_SESSION['login']['email'] . '" style="display:none" id="email"></div>';
+			}                     
+		?>
 		<!-- Header Area -->
 		<header class="header" >
 			<!-- Header Inner -->
 			<div class="header-inner">
- 				<div class="container">
+				<div class="container">
 					<div class="inner">
 						<div class="row">
 							<div class="col-lg-3 col-md-3 col-12">
 								<!-- Start Logo -->
 								<div class="logo">
-									<a href="home.php"><img src="../images/logo1.png" alt="#"></a>
+									<a href="index.html"><img src="../images/logo1.png" alt="#"></a>
 								</div>
 								<!-- End Logo -->
 								<!-- Mobile Nav -->
@@ -75,15 +85,19 @@ session_start();
 								<div class="main-menu">
 									<nav class="navigation">
 										<ul class="nav menu">
-											<li class="active"><a href="#">Home <i class="icofont-rounded-down"></i></a></li>
-											<li><a href="#">Doctos </a></li>
-											<li><a href="#">Services </a></li>
-											<li><a href="#">Pages <i class="icofont-rounded-down"></i></a>
+											<li class="active"><a href="#">Home <i class="fas fa-chevron-down"></i></a>
 												<ul class="dropdown">
-													<li><a href="404.html">404 Error</a></li>
+													<li><a href="index.html">Home Page 1</a></li>
 												</ul>
 											</li>
-											<li><a href="#">Blogs <i class="icofont-rounded-down"></i></a>
+											<li><a href="#">Grammar </a></li>
+											<li><a href="#">Vocabulary </a></li>
+											<li><a href="#">Test <i class="fas fa-chevron-down"></i></a>
+												<ul class="dropdown">
+													<li><a href="viewexam/chooseExam.html">Test</a></li>
+												</ul>
+											</li>
+											<li><a href="#">Blogs <i class="fas fa-chevron-down"></i></a>
 												<ul class="dropdown">
 													<li><a href="blog-single.html">Blog Details</a></li>
 												</ul>
@@ -93,20 +107,7 @@ session_start();
 									</nav>
 								</div>
 								<!--/ End Main Menu -->
-							</div>
-							<div class="col-lg-2 col-12">
-								<div class="get-quote">
-								<?php
-									if(isset($_SESSION['login']['email'])) {
-										echo '<div value="' . $_SESSION['login']['email'] . '" style="display:none" id="email"></div>';
-									} 
-									else       
-									{
-										echo'<a href="../views/loginview.php" class="btn">Login</a>';
-									}                        
-								?>
-								</div>
-							</div>
+							</div>							
 						</div>
 					</div>
 				</div>
@@ -114,27 +115,64 @@ session_start();
 			<!--/ End Header Inner -->
 		</header>
 		<!-- End Header Area -->
-		<!-- Breadcrumbs -->
 		<div class="breadcrumbs overlay">
-				<div class="bread-inner">	
-						<div class="col-12">
-							<h2> Exam </h2>
-						</div>
-				</div>
-		</div>
-		<!-- End Breadcrumbs -->
-				
-		<!-- Start Contact Us -->
-		<section class="contact-us section">
-			<div class="container">
-				<div class="contact-info">
-					<div class="row" id="list-exam">																				
+			<div class="bread-inner">	
+					<div class="col-12">
+						<h2> Danh sách đề thi đã làm </h2>
 					</div>
-				</div>
 			</div>
-		</section>
-		<!--/ End Contact Us -->
+			</div>
+
+			<div style="margin-bottom: 40px;"></div>
+
+			<!-- test -->
+			<table id = "list-exam">
+			<tr>
+				<th>Ngày làm</th>
+				<th>Đề thi</th>
+				<th>Kết quả</th>
 		
+				<th></th>
+			</tr>
+			
+			</table>
+
+		<!-- test -->
+		<div class="container">
+			<div class="table-container">
+				<table id="sole">							
+				</table>
+			</div>
+			<div class="table-container">
+				<table id="sochan">					
+				</table>
+			</div>
+		</div>
+		
+		<!--/test -->
+		<style>
+			.container {
+   			 display: flex;
+   			 justify-content: space-between;
+			}
+
+			.table-container {
+   			 width: 45%; 
+			}
+
+			table {
+   			width: 100%;
+    		border-collapse: collapse;
+			}
+
+			td {
+    		height: 50px;
+    		border: 2px solid black; 
+    		text-align: center;
+    		vertical-align: middle;
+			}
+		</style>
+
 		<!-- Footer Area -->
 		<footer id="footer" class="footer ">
 			<!-- Footer Top -->
@@ -207,9 +245,21 @@ session_start();
 				</div>
 			</div>
 			<!--/ End Footer Top -->
+			<!-- Copyright -->
+			<div class="copyright">
+				<div class="container">
+					<div class="roSw">
+						<div class="col-lg-12 col-md-12 col-12">
+						
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Copyright -->
 		</footer>
 		<!--/ End Footer Area -->
-		
+	
+
 		<!-- jquery Min JS -->
         <script src="../homejs/jquery.min.js"></script>
 		<!-- jquery Migrate JS -->
@@ -225,7 +275,7 @@ session_start();
 		<!-- Bootstrap Datepicker JS -->
 		<script src="../homejs/bootstrap-datepicker.js"></script>
 		<!-- Jquery Nav JS -->
-        <script src="../homejs/jquery.nav.js"></script>
+        <script src="../homes/jquery.nav.js"></script>
 		<!-- Slicknav JS -->
 		<script src="../homejs/slicknav.min.js"></script>
 		<!-- ScrollUp JS -->
@@ -239,7 +289,7 @@ session_start();
 		<!-- counterup JS -->
 		<script src="../homejs/jquery.counterup.min.js"></script>
 		<!-- Steller JS -->
-		<script src="js/steller.js"></script>
+		<script src="../homejs/steller.js"></script>
 		<!-- Wow JS -->
 		<script src="../homejs/wow.min.js"></script>
 		<!-- Magnific Popup JS -->
@@ -250,6 +300,6 @@ session_start();
 		<script src="../homejs/bootstrap.min.js"></script>
 		<!-- Main JS -->
 		<script src="../homejs/main.js"></script>
-		<script src="../js/getAllExam.js"></script>
+        <script src="../js/getListExam.js"></script>
     </body>
 </html>
