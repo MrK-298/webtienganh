@@ -1,5 +1,9 @@
 function sendCode() {
     var email = document.getElementById('email').value;    
+    if (isValidGmail(email)==false) {
+        alert('Phải nhập đúng định dạng gmail');
+        return;
+    }    
     fetch('http://localhost:8084/webtienganh/api/account/sendcode.php', {
         method: 'PUT',
         headers: {
@@ -24,6 +28,11 @@ function sendCode() {
         console.error('Lỗi:', error);
     });
 }
+function isValidGmail(email) {
+    var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return regex.test(email);
+}
+
 function changePassword(){
     var email = document.getElementById('email').value;    
     var code = document.getElementById('verificationCode').value;    

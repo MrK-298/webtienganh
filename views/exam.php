@@ -30,7 +30,7 @@ if(isset($_SESSION['login']['email'])) {
 </div>
 <div id="question-list">
 <h2>Danh sách câu</h2>
-<button id="submit-button" type="submit">Nop bai</button>
+<button id="submit-button" type="submit">Nộp bài</button>
 <br></br>
 </div>
 <script src="../js/pagination.js"></script>

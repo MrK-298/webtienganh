@@ -25,13 +25,16 @@ window.onload = async function() {
             readingDiv.appendChild(singleInfoDiv);
             examList.appendChild(readingDiv);
             singleInfoDiv.addEventListener('click',function(){
-                const email = document.getElementById("email").getAttribute("value");
+                const emailElement = document.getElementById("email");
+                const email = emailElement ? emailElement.getAttribute("value") : null;
+
+                console.log(email);
                 if(email)
-                {
+                {                
                     window.location.href = `../views/exam.php?examname=${exam.name}`;
                 }
                 else{
-                    alert("Hãy đăng nhập để làm bài")
+                    alert("Hãy đăng nhập để làm bài");
                 }
             });                   
         });

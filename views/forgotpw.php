@@ -47,7 +47,7 @@
                                             <div class="form-group">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                                    <input id="email" name="email" placeholder="Nhập email của bạn" class="form-control" type="email">
+                                                    <input id="email" name="email" placeholder="Nhập email của bạn" class="form-control" type="email" required>
                                                 </div>
                                                 <div class="input-group" style="display:none" id="verificationCode-form">
                                                     <span class="input-group-addon"><i class="fas fa-lock"></i></span>
@@ -63,7 +63,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <input id="send-code-btn" name="send-code" class="btn btn-lg btn-primary btn-block" value="Send code" type="Send Code">
+                                                <input id="send-code-btn" name="send-code" class="btn btn-lg btn-primary btn-block" value="Send code" type="button">
                                             </div>
                                             <div class="form-group">
                                                 <input id="recover-btn" name="recover-btn" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="Reset Password">
