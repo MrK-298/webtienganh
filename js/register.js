@@ -4,7 +4,14 @@ window.onload = async function() {
         var name = document.getElementById('name').value;
         var password = document.getElementById('password').value;
         var confirmPassword = document.getElementById('confirmpassword').value;
-        if (name.length < 8 && name.length > 30) {
+        var phone = document.getElementById('phone').value;
+        if(isValidVietnamesePhoneNumber(phone)==false)
+        {
+            alert('Số điện thoại sai định dạng');
+            event.preventDefault();
+            return;
+        }
+        if (name.length < 8 || name.length > 30) {
             alert('Họ và tên phải nằm trong 8 đến 30 ký tự');
             event.preventDefault();
             return;
@@ -43,4 +50,8 @@ window.onload = async function() {
         });
     });
 
+}
+function isValidVietnamesePhoneNumber(phoneNumber) {
+    var regex = /^(0|\+84)(\d{9,10})$/;
+    return regex.test(phoneNumber);
 }

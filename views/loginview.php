@@ -50,6 +50,10 @@
                     <input type="text" name="username" id="username" placeholder="Nhập username" required>
                 </div>
                 <div class="input-box">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" name="phone" id="phone" placeholder="Nhập Số điện thoại" required>
+                </div>
+                <div class="input-box">
                     <i class="fas fa-user"></i>
                     <input type="text" name="name" id="name" placeholder="Nhập Họ và tên" required>
                 </div>
