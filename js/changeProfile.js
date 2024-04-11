@@ -30,6 +30,10 @@ function changeProfile() {
         console.error('Lỗi:', error);
     });
 }
+function isValidVietnamesePhoneNumber(phoneNumber) {
+    var regex = /^(0|\+84)(\d{9,10})$/;
+    return regex.test(phoneNumber);
+}
 const submitButton = document.getElementById('save');
 submitButton.addEventListener('click', changeProfile);
 window.onload = async function getExamName() {
