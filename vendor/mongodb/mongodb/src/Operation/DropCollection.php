@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,6 @@ namespace MongoDB\Operation;
 
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Exception\CommandException;
-use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
@@ -32,28 +31,29 @@ use function is_array;
 /**
  * Operation for the drop command.
  *
+ * @api
  * @see \MongoDB\Collection::drop()
  * @see \MongoDB\Database::dropCollection()
- * @see https://mongodb.com/docs/manual/reference/command/drop/
+ * @see http://docs.mongodb.org/manual/reference/command/drop/
  */
 class DropCollection implements Executable
 {
-    private const ERROR_CODE_NAMESPACE_NOT_FOUND = 26;
+    /** @var integer */
+    private static $errorCodeNamespaceNotFound = 26;
 
-    private string $databaseName;
+    /** @var string */
+    private $databaseName;
 
-    private string $collectionName;
+    /** @var string */
+    private $collectionName;
 
-    private array $options;
+    /** @var array */
+    private $options;
 
     /**
      * Constructs a drop command.
      *
      * Supported options:
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * session (MongoDB\Driver\Session): Client session.
      *
@@ -67,7 +67,7 @@ class DropCollection implements Executable
      * @param array  $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array $options = [])
+    public function __construct($databaseName, $collectionName, array $options = [])
     {
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
             throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
@@ -85,8 +85,8 @@ class DropCollection implements Executable
             unset($options['writeConcern']);
         }
 
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
+        $this->databaseName = (string) $databaseName;
+        $this->collectionName = (string) $collectionName;
         $this->options = $options;
     }
 
@@ -94,6 +94,7 @@ class DropCollection implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
+     * @param Server $server
      * @return array|object Command result document
      * @throws UnsupportedException if write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -105,13 +106,15 @@ class DropCollection implements Executable
             throw UnsupportedException::writeConcernNotSupportedInTransaction();
         }
 
+        $command = new Command(['drop' => $this->collectionName]);
+
         try {
-            $cursor = $server->executeWriteCommand($this->databaseName, $this->createCommand(), $this->createOptions());
+            $cursor = $server->executeWriteCommand($this->databaseName, $command, $this->createOptions());
         } catch (CommandException $e) {
             /* The server may return an error if the collection does not exist.
              * Check for an error code and return the command reply instead of
              * throwing. */
-            if ($e->getCode() === self::ERROR_CODE_NAMESPACE_NOT_FOUND) {
+            if ($e->getCode() === self::$errorCodeNamespaceNotFound) {
                 return $e->getResultDocument();
             }
 
@@ -126,25 +129,12 @@ class DropCollection implements Executable
     }
 
     /**
-     * Create the drop command.
-     */
-    private function createCommand(): Command
-    {
-        $cmd = ['drop' => $this->collectionName];
-
-        if (isset($this->options['comment'])) {
-            $cmd['comment'] = $this->options['comment'];
-        }
-
-        return new Command($cmd);
-    }
-
-    /**
      * Create options for executing the command.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executewritecommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executewritecommand.php
+     * @return array
      */
-    private function createOptions(): array
+    private function createOptions()
     {
         $options = [];
 

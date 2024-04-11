@@ -1,7 +1,7 @@
-window.onload = async function() {
-    document.getElementById('signup-form').addEventListener('submit', function(event) {
+async function register() {
         var username = document.getElementById('username').value;
         var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
         var password = document.getElementById('password').value;
         var confirmPassword = document.getElementById('confirmpassword').value;
         var phone = document.getElementById('phone').value;
@@ -31,15 +31,16 @@ window.onload = async function() {
             event.preventDefault();
             return;
         }
-        var formData = new FormData(this); 
+
         fetch('http://localhost:8084/webtienganh/api/account/register.php', {
             method: 'POST',
-            body: formData
+            body: JSON.stringify({ email: email, phone:phone, name:name , password:password,username:username})
         })
-        .then(response => response.json())
-        .then(async data => {
+        .then(response =>  response.json())
+        .then(data => {
+            console.log(data);
             if (data.success == true) {               
-                await alert("Đăng ký tài khoản thành công");
+                alert("Đăng ký tài khoản thành công");
                 window.location.href = '../views/loginview.php';
             } else {
                 alert(data.message,data.error);
@@ -48,10 +49,10 @@ window.onload = async function() {
         .catch(error => {
             console.error('Lỗi:', error);
         });
-    });
-
 }
 function isValidVietnamesePhoneNumber(phoneNumber) {
     var regex = /^(0|\+84)(\d{9,10})$/;
     return regex.test(phoneNumber);
 }
+const btn = document.getElementById('btn-register');
+btn.addEventListener('click', register);

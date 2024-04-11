@@ -10,13 +10,16 @@ use Throwable;
 use function call_user_func;
 use function time;
 
-/** @internal */
+/**
+ * @internal
+ */
 class WithTransaction
 {
     /** @var callable */
     private $callback;
 
-    private array $transactionOptions;
+    /** @var array */
+    private $transactionOptions;
 
     /**
      * @see Session::startTransaction for supported transaction options
@@ -49,10 +52,11 @@ class WithTransaction
      * @see Client::startSession
      *
      * @param Session $session A session object as retrieved by Client::startSession
+     * @return void
      * @throws RuntimeException for driver errors while committing the transaction
      * @throws Exception for any other errors, including those thrown in the callback
      */
-    public function execute(Session $session): void
+    public function execute(Session $session)
     {
         $startTime = time();
 
@@ -119,8 +123,9 @@ class WithTransaction
      * Returns whether the time limit for retrying transactions in the convenient transaction API has passed
      *
      * @param int $startTime The time the transaction was started
+     * @return bool
      */
-    private function isTransactionTimeLimitExceeded(int $startTime): bool
+    private function isTransactionTimeLimitExceeded($startTime)
     {
         return time() - $startTime >= 120;
     }

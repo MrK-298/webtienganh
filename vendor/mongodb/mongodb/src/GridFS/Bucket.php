@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,8 @@
 
 namespace MongoDB\GridFS;
 
-use Iterator;
-use MongoDB\BSON\Document;
-use MongoDB\Codec\DocumentCodec;
 use MongoDB\Collection;
-use MongoDB\Driver\CursorInterface;
+use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\ReadConcern;
@@ -35,10 +32,9 @@ use MongoDB\GridFS\Exception\StreamException;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Operation\Find;
+use stdClass;
 
 use function array_intersect_key;
-use function array_key_exists;
-use function assert;
 use function fopen;
 use function get_resource_type;
 use function in_array;
@@ -63,42 +59,56 @@ use function urlencode;
 /**
  * Bucket provides a public API for interacting with the GridFS files and chunks
  * collections.
+ *
+ * @api
  */
 class Bucket
 {
-    private const DEFAULT_BUCKET_NAME = 'fs';
+    /** @var string */
+    private static $defaultBucketName = 'fs';
 
-    private const DEFAULT_CHUNK_SIZE_BYTES = 261120;
+    /** @var integer */
+    private static $defaultChunkSizeBytes = 261120;
 
-    private const DEFAULT_TYPE_MAP = [
+    /** @var array */
+    private static $defaultTypeMap = [
         'array' => BSONArray::class,
         'document' => BSONDocument::class,
         'root' => BSONDocument::class,
     ];
 
-    private const STREAM_WRAPPER_PROTOCOL = 'gridfs';
+    /** @var string */
+    private static $streamWrapperProtocol = 'gridfs';
 
-    private ?DocumentCodec $codec = null;
+    /** @var CollectionWrapper */
+    private $collectionWrapper;
 
-    private CollectionWrapper $collectionWrapper;
+    /** @var string */
+    private $databaseName;
 
-    private string $databaseName;
+    /** @var Manager */
+    private $manager;
 
-    private Manager $manager;
+    /** @var string */
+    private $bucketName;
 
-    private string $bucketName;
+    /** @var boolean */
+    private $disableMD5;
 
-    private bool $disableMD5;
+    /** @var integer */
+    private $chunkSizeBytes;
 
-    private int $chunkSizeBytes;
+    /** @var ReadConcern */
+    private $readConcern;
 
-    private ReadConcern $readConcern;
+    /** @var ReadPreference */
+    private $readPreference;
 
-    private ReadPreference $readPreference;
+    /** @var array */
+    private $typeMap;
 
-    private array $typeMap;
-
-    private WriteConcern $writeConcern;
+    /** @var WriteConcern */
+    private $writeConcern;
 
     /**
      * Constructs a GridFS bucket.
@@ -127,11 +137,11 @@ class Bucket
      * @param array   $options      Bucket options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(Manager $manager, string $databaseName, array $options = [])
+    public function __construct(Manager $manager, $databaseName, array $options = [])
     {
         $options += [
-            'bucketName' => self::DEFAULT_BUCKET_NAME,
-            'chunkSizeBytes' => self::DEFAULT_CHUNK_SIZE_BYTES,
+            'bucketName' => self::$defaultBucketName,
+            'chunkSizeBytes' => self::$defaultChunkSizeBytes,
             'disableMD5' => false,
         ];
 
@@ -145,10 +155,6 @@ class Bucket
 
         if ($options['chunkSizeBytes'] < 1) {
             throw new InvalidArgumentException(sprintf('Expected "chunkSizeBytes" option to be >= 1, %d given', $options['chunkSizeBytes']));
-        }
-
-        if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
-            throw InvalidArgumentException::invalidType('"codec" option', $options['codec'], DocumentCodec::class);
         }
 
         if (! is_bool($options['disableMD5'])) {
@@ -171,19 +177,14 @@ class Bucket
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if (isset($options['codec']) && isset($options['typeMap'])) {
-            throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
-        }
-
         $this->manager = $manager;
-        $this->databaseName = $databaseName;
+        $this->databaseName = (string) $databaseName;
         $this->bucketName = $options['bucketName'];
         $this->chunkSizeBytes = $options['chunkSizeBytes'];
-        $this->codec = $options['codec'] ?? null;
         $this->disableMD5 = $options['disableMD5'];
         $this->readConcern = $options['readConcern'] ?? $this->manager->getReadConcern();
         $this->readPreference = $options['readPreference'] ?? $this->manager->getReadPreference();
-        $this->typeMap = $options['typeMap'] ?? self::DEFAULT_TYPE_MAP;
+        $this->typeMap = $options['typeMap'] ?? self::$defaultTypeMap;
         $this->writeConcern = $options['writeConcern'] ?? $this->manager->getWriteConcern();
 
         $collectionOptions = array_intersect_key($options, ['readConcern' => 1, 'readPreference' => 1, 'typeMap' => 1, 'writeConcern' => 1]);
@@ -195,16 +196,14 @@ class Bucket
     /**
      * Return internal properties for debugging purposes.
      *
-     * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @see http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
      * @return array
      */
     public function __debugInfo()
     {
         return [
             'bucketName' => $this->bucketName,
-            'codec' => $this->codec,
             'databaseName' => $this->databaseName,
-            'disableMD5' => $this->disableMD5,
             'manager' => $this->manager,
             'chunkSizeBytes' => $this->chunkSizeBytes,
             'readConcern' => $this->readConcern,
@@ -221,7 +220,6 @@ class Bucket
      * attempt to delete orphaned chunks.
      *
      * @param mixed $id File ID
-     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
@@ -240,7 +238,6 @@ class Bucket
      *
      * @param mixed    $id          File ID
      * @param resource $destination Writable Stream
-     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws InvalidArgumentException if $destination is not a stream
      * @throws StreamException if the file could not be uploaded
@@ -248,7 +245,7 @@ class Bucket
      */
     public function downloadToStream($id, $destination)
     {
-        if (! is_resource($destination) || get_resource_type($destination) != 'stream') {
+        if (! is_resource($destination) || get_resource_type($destination) != "stream") {
             throw InvalidArgumentException::invalidType('$destination', $destination, 'resource');
         }
 
@@ -280,15 +277,14 @@ class Bucket
      * @param string   $filename    Filename
      * @param resource $destination Writable Stream
      * @param array    $options     Download options
-     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws InvalidArgumentException if $destination is not a stream
      * @throws StreamException if the file could not be uploaded
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function downloadToStreamByName(string $filename, $destination, array $options = [])
+    public function downloadToStreamByName($filename, $destination, array $options = [])
     {
-        if (! is_resource($destination) || get_resource_type($destination) != 'stream') {
+        if (! is_resource($destination) || get_resource_type($destination) != "stream") {
             throw InvalidArgumentException::invalidType('$destination', $destination, 'resource');
         }
 
@@ -302,7 +298,6 @@ class Bucket
      * Drops the files and chunks collections associated with this GridFS
      * bucket.
      *
-     * @return void
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function drop()
@@ -317,17 +312,13 @@ class Bucket
      * @see Find::__construct() for supported options
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Additional options
-     * @return CursorInterface&Iterator
+     * @return Cursor
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function find($filter = [], array $options = [])
     {
-        if ($this->codec && ! array_key_exists('codec', $options)) {
-            $options['codec'] = $this->codec;
-        }
-
         return $this->collectionWrapper->findFiles($filter, $options);
     }
 
@@ -345,10 +336,6 @@ class Bucket
      */
     public function findOne($filter = [], array $options = [])
     {
-        if ($this->codec && ! array_key_exists('codec', $options)) {
-            $options['codec'] = $this->codec;
-        }
-
         return $this->collectionWrapper->findOneFile($filter, $options);
     }
 
@@ -404,10 +391,6 @@ class Bucket
     {
         $file = $this->getRawFileDocumentForStream($stream);
 
-        if ($this->codec) {
-            return $this->codec->decode(Document::fromPHP($file));
-        }
-
         // Filter the raw document through the specified type map
         return apply_type_map_to_document($file, $this->typeMap);
     }
@@ -430,7 +413,6 @@ class Bucket
          */
         $typeMap = ['root' => 'stdClass'] + $this->typeMap;
         $file = apply_type_map_to_document($file, $typeMap);
-        assert(is_object($file));
 
         if (! isset($file->_id) && ! property_exists($file, '_id')) {
             throw new CorruptFileException('file._id does not exist');
@@ -452,7 +434,7 @@ class Bucket
     /**
      * Return the read concern for this GridFS bucket.
      *
-     * @see https://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
+     * @see http://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
      * @return ReadConcern
      */
     public function getReadConcern()
@@ -483,7 +465,7 @@ class Bucket
     /**
      * Return the write concern for this GridFS bucket.
      *
-     * @see https://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
+     * @see http://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
      * @return WriteConcern
      */
     public function getWriteConcern()
@@ -511,7 +493,7 @@ class Bucket
     }
 
     /**
-     * Opens a readable stream to read a GridFS file, which is selected
+     * Opens a readable stream stream to read a GridFS file, which is selected
      * by name and revision.
      *
      * Supported options:
@@ -535,7 +517,7 @@ class Bucket
      * @throws FileNotFoundException if no file could be selected
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function openDownloadStreamByName(string $filename, array $options = [])
+    public function openDownloadStreamByName($filename, array $options = [])
     {
         $options += ['revision' => -1];
 
@@ -568,16 +550,13 @@ class Bucket
      * @param array  $options  Upload options
      * @return resource
      */
-    public function openUploadStream(string $filename, array $options = [])
+    public function openUploadStream($filename, array $options = [])
     {
-        $options += [
-            'chunkSizeBytes' => $this->chunkSizeBytes,
-            'disableMD5' => $this->disableMD5,
-        ];
+        $options += ['chunkSizeBytes' => $this->chunkSizeBytes];
 
         $path = $this->createPathForUpload();
         $context = stream_context_create([
-            self::STREAM_WRAPPER_PROTOCOL => [
+            self::$streamWrapperProtocol => [
                 'collectionWrapper' => $this->collectionWrapper,
                 'filename' => $filename,
                 'options' => $options,
@@ -592,11 +571,10 @@ class Bucket
      *
      * @param mixed  $id          File ID
      * @param string $newFilename New filename
-     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function rename($id, string $newFilename)
+    public function rename($id, $newFilename)
     {
         $updateResult = $this->collectionWrapper->updateFilenameForId($id, $newFilename);
 
@@ -642,9 +620,9 @@ class Bucket
      * @throws StreamException if the file could not be uploaded
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function uploadFromStream(string $filename, $source, array $options = [])
+    public function uploadFromStream($filename, $source, array $options = [])
     {
-        if (! is_resource($source) || get_resource_type($source) != 'stream') {
+        if (! is_resource($source) || get_resource_type($source) != "stream") {
             throw InvalidArgumentException::invalidType('$source', $source, 'resource');
         }
 
@@ -662,42 +640,47 @@ class Bucket
     /**
      * Creates a path for an existing GridFS file.
      *
-     * @param object $file GridFS file document
+     * @param stdClass $file GridFS file document
+     * @return string
      */
-    private function createPathForFile(object $file): string
+    private function createPathForFile(stdClass $file)
     {
-        if (is_array($file->_id) || (is_object($file->_id) && ! method_exists($file->_id, '__toString'))) {
-            $id = toJSON(fromPHP(['_id' => $file->_id]));
-        } else {
+        if (! is_object($file->_id) || method_exists($file->_id, '__toString')) {
             $id = (string) $file->_id;
+        } else {
+            $id = toJSON(fromPHP(['_id' => $file->_id]));
         }
 
         return sprintf(
             '%s://%s/%s.files/%s',
-            self::STREAM_WRAPPER_PROTOCOL,
+            self::$streamWrapperProtocol,
             urlencode($this->databaseName),
             urlencode($this->bucketName),
-            urlencode($id),
+            urlencode($id)
         );
     }
 
     /**
      * Creates a path for a new GridFS file, which does not yet have an ID.
+     *
+     * @return string
      */
-    private function createPathForUpload(): string
+    private function createPathForUpload()
     {
         return sprintf(
             '%s://%s/%s.files',
-            self::STREAM_WRAPPER_PROTOCOL,
+            self::$streamWrapperProtocol,
             urlencode($this->databaseName),
-            urlencode($this->bucketName),
+            urlencode($this->bucketName)
         );
     }
 
     /**
      * Returns the names of the files collection.
+     *
+     * @return string
      */
-    private function getFilesNamespace(): string
+    private function getFilesNamespace()
     {
         return sprintf('%s.%s.files', $this->databaseName, $this->bucketName);
     }
@@ -709,11 +692,12 @@ class Bucket
      * respect the Bucket's type map.
      *
      * @param resource $stream GridFS stream
+     * @return stdClass
      * @throws InvalidArgumentException
      */
-    private function getRawFileDocumentForStream($stream): object
+    private function getRawFileDocumentForStream($stream)
     {
-        if (! is_resource($stream) || get_resource_type($stream) != 'stream') {
+        if (! is_resource($stream) || get_resource_type($stream) != "stream") {
             throw InvalidArgumentException::invalidType('$stream', $stream, 'resource');
         }
 
@@ -729,14 +713,14 @@ class Bucket
     /**
      * Opens a readable stream for the GridFS file.
      *
-     * @param object $file GridFS file document
+     * @param stdClass $file GridFS file document
      * @return resource
      */
-    private function openDownloadStreamByFile(object $file)
+    private function openDownloadStreamByFile(stdClass $file)
     {
         $path = $this->createPathForFile($file);
         $context = stream_context_create([
-            self::STREAM_WRAPPER_PROTOCOL => [
+            self::$streamWrapperProtocol => [
                 'collectionWrapper' => $this->collectionWrapper,
                 'file' => $file,
             ],
@@ -748,12 +732,12 @@ class Bucket
     /**
      * Registers the GridFS stream wrapper if it is not already registered.
      */
-    private function registerStreamWrapper(): void
+    private function registerStreamWrapper()
     {
-        if (in_array(self::STREAM_WRAPPER_PROTOCOL, stream_get_wrappers())) {
+        if (in_array(self::$streamWrapperProtocol, stream_get_wrappers())) {
             return;
         }
 
-        StreamWrapper::register(self::STREAM_WRAPPER_PROTOCOL);
+        StreamWrapper::register(self::$streamWrapperProtocol);
     }
 }

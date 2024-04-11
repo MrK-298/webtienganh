@@ -21,12 +21,7 @@ function sendmail($email){
         $mail->addAddress($email);
         $mail->Subject = "=?UTF-8?B?" . base64_encode("Đăng ký tài khoản") . "?=";
         $mail->Body = ("Đăng ký tài khoản thành công");
-        $mail->send();
-        if (empty($mail->ErrorInfo)) {
-            echo "Email đã được gửi thành công!\n";
-        } else {
-            echo "Có lỗi xảy ra khi gửi email: " . $mail->ErrorInfo;
-        }
+        $mail->send();     
     } catch (Exception $e) {
         echo "Có lỗi xảy ra khi gửi email: " . $e->getMessage();
     }

@@ -70,7 +70,7 @@
                     <input type="password" name="confirmpassword" id="confirmpassword" placeholder="Nhập lại mật khẩu của bạn" required>                   
                 </div>
                 <div class="button input-box">
-                  <input type="submit" value="Đăng ký">
+                  <input value="Đăng ký" id="btn-register" type="button">
                 </div>
               </form>
                 <div class="text sign-up-text">Bạn đã có tài khoản? <label for="flip">Đăng nhập ngay</label></div>

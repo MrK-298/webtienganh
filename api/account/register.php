@@ -2,41 +2,32 @@
 require '../../database/mongodb_connection.php';
 require '../../function/sendmail.php';
 $collection = connectToMongoDB("WebTiengAnh","User");
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $name = $_POST['name'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirmpassword = $_POST['confirmpassword'];
-    if($password == $confirmpassword)
-    {
-        $newUser = [
+    $input_data = file_get_contents("php://input");
+    $post_data = json_decode($input_data, true);
+    $username = $post_data['username'];
+    $name = $post_data['name'];
+    $phone = $post_data['phone'];
+    $email = $post_data['email'];
+    $password = $post_data['password'];
+    $newUser = [
             'username' => $username,
             'password' => password_hash($password, PASSWORD_DEFAULT),
             'email' => $email,
             'verificationCode' => null,
             'name' => $name,
             'phone' => $phone
-        ];
-        header('Content-Type: application/json'); 
-        try {
-            $result = $collection->insertOne($newUser);
-            if ($result->getInsertedCount() === 1) {
-                $response = ['success' => true, 'user' => $newUser];
-                sendmail($email);
-                header("HTTP/1.0 200 success");
-            } else {
-                $response = ['success' => false, 'message' => 'Đăng ký thất bại', 'error' => 'Unknown error'];
-                header("HTTP/1.0 404 error");
-            }
-            echo json_encode($response);
-        } catch (MongoDB\Driver\Exception\BulkWriteException $e) {
-            $response = ['success' => false, 'message' => 'Đăng ký thất bại', 'error' => $e->getMessage()];
-            echo json_encode($response);
-            header("HTTP/1.0 404 error");
-        }        
-    }
+    ];     
+    try {
+        $result = $collection->insertOne($newUser);       
+        sendmail($email);
+        $response = ['success' => true, 'message' => 'Đăng ký thành công'];       
+        header('Content-Type: application/json');   
+        echo json_encode($response);
+    } catch (MongoDB\Driver\Exception\BulkWriteException $e) {
+        $response = ['success' => false, 'message' => 'Đăng ký không thành công', 'error' => $e->getMessage()];
+        header('Content-Type: application/json');   
+        echo json_encode($response);           
+    }        
 }
 ?>

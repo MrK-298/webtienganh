@@ -9,7 +9,9 @@ async function submitAnswers() {
     .then(async data => {
         await submitPart5(data);
         await submitPart7(data);
+        
         if (confirm("Bạn có chắc muốn nộp bài không?")) {
+            console.log(correctAnswers);
             DetailExam(examName,array);
         }
     }); 
@@ -19,7 +21,7 @@ submitButton.addEventListener('click', submitAnswers);
 function DetailExam(exam,arr){
     const email = document.getElementById("email").getAttribute("value");
     const arrJSON = JSON.stringify(arr);
-    const requestBody = JSON.stringify({ email: email, exam: exam, arr: arrJSON });
+    const requestBody = JSON.stringify({ email: email, exam: exam, score: correctAnswers, arr: arrJSON });
     fetch(`http://localhost:8084/webtienganh/api/exam/detailExam.php`,{
         method: 'POST',
         headers: {

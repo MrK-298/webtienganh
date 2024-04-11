@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,14 +25,19 @@ use MongoDB\Exception\BadMethodCallException;
  */
 class InsertOneResult
 {
-    private WriteResult $writeResult;
+    /** @var WriteResult */
+    private $writeResult;
 
     /** @var mixed */
     private $insertedId;
 
-    private bool $isAcknowledged;
+    /** @var boolean */
+    private $isAcknowledged;
 
-    /** @param mixed $insertedId */
+    /**
+     * @param WriteResult $writeResult
+     * @param mixed       $insertedId
+     */
     public function __construct(WriteResult $writeResult, $insertedId)
     {
         $this->writeResult = $writeResult;
@@ -46,8 +51,8 @@ class InsertOneResult
      * This method should only be called if the write was acknowledged.
      *
      * @see InsertOneResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @return integer
+     * @throws BadMethodCallException is the write result is unacknowledged
      */
     public function getInsertedCount()
     {

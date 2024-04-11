@@ -8,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $input_data = file_get_contents("php://input");
         $post_data = json_decode($input_data, true);
         $email = $post_data['email'];
+        $score = $post_data['score'];
         $user = $collectionUser->findOne(['email'=>$email]);
         $examname = $post_data['exam'];
         $exam = $collectionExam->findOne(['name' => $examname]);
@@ -22,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ];        
         $update = [
             '$set' => [
+                'score' => $score,
                 'Answers' => $arr,
                 'create_at' => $createAt
             ]

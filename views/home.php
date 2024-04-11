@@ -101,7 +101,8 @@ session_start();
 											<li><a href="contact.html">Contact Us</a></li>
 											<?php
 												if(isset($_SESSION['login']['username'])) {
-													echo '<a href="../views/profile.php?username=' . $_SESSION['login']['username'] . '">Profile</a>';
+													echo '<li><a href="../views/profile.php?username=' . $_SESSION['login']['username'] . '">Profile</a></li>';
+													echo '<li><a href="../views/listexamdone.php?username=' . $_SESSION['login']['username'] . '">DoneExam</a></li>';
 												}                                 
                                     		?>          
 										</ul>

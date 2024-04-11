@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,6 @@
 
 namespace MongoDB\Model;
 
-use ArrayIterator;
 use ArrayObject;
 use JsonSerializable;
 use MongoDB\BSON\Serializable;
@@ -32,7 +31,7 @@ use function MongoDB\recursive_copy;
  * The internal data will be cast to an object during BSON serialization to
  * ensure that it becomes a BSON document.
  *
- * @template-extends ArrayObject<string, mixed>
+ * @api
  */
 class BSONDocument extends ArrayObject implements JsonSerializable, Serializable, Unserializable
 {
@@ -50,11 +49,12 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * This overrides the parent constructor to allow property access of entries
      * by default.
      *
-     * @see https://php.net/arrayobject.construct
-     * @param array<string, mixed> $input
-     * @psalm-param class-string<ArrayIterator<string,mixed>>|class-string<ArrayObject<string,mixed>> $iteratorClass
+     * @see http://php.net/arrayobject.construct
+     * @param array   $input
+     * @param integer $flags
+     * @param string  $iteratorClass
      */
-    public function __construct(array $input = [], int $flags = ArrayObject::ARRAY_AS_PROPS, string $iteratorClass = ArrayIterator::class)
+    public function __construct($input = [], $flags = ArrayObject::ARRAY_AS_PROPS, $iteratorClass = 'ArrayIterator')
     {
         parent::__construct($input, $flags, $iteratorClass);
     }
@@ -62,13 +62,14 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
     /**
      * Factory method for var_export().
      *
-     * @see https://php.net/oop5.magic#object.set-state
-     * @see https://php.net/var-export
+     * @see http://php.net/oop5.magic#object.set-state
+     * @see http://php.net/var-export
+     * @param array $properties
      * @return self
      */
     public static function __set_state(array $properties)
     {
-        $document = new self();
+        $document = new static();
         $document->exchangeArray($properties);
 
         return $document;
@@ -77,10 +78,9 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
     /**
      * Serialize the document to BSON.
      *
-     * @see https://php.net/mongodb-bson-serializable.bsonserialize
+     * @see http://php.net/mongodb-bson-serializable.bsonserialize
      * @return object
      */
-    #[ReturnTypeWillChange]
     public function bsonSerialize()
     {
         return (object) $this->getArrayCopy();
@@ -89,10 +89,9 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
     /**
      * Unserialize the document to BSON.
      *
-     * @see https://php.net/mongodb-bson-unserializable.bsonunserialize
-     * @param array<string, mixed> $data Array data
+     * @see http://php.net/mongodb-bson-unserializable.bsonunserialize
+     * @param array $data Array data
      */
-    #[ReturnTypeWillChange]
     public function bsonUnserialize(array $data)
     {
         parent::__construct($data, ArrayObject::ARRAY_AS_PROPS);
@@ -101,7 +100,7 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
     /**
      * Serialize the array to JSON.
      *
-     * @see https://php.net/jsonserializable.jsonserialize
+     * @see http://php.net/jsonserializable.jsonserialize
      * @return object
      */
     #[ReturnTypeWillChange]

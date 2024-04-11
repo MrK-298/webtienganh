@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,26 +22,26 @@ use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 
-use function array_key_exists;
 use function is_array;
 use function is_integer;
 use function is_object;
-use function MongoDB\is_document;
 use function MongoDB\is_first_key_operator;
 use function MongoDB\is_pipeline;
 
 /**
  * Operation for updating a document with the findAndModify command.
  *
+ * @api
  * @see \MongoDB\Collection::findOneAndUpdate()
- * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
+ * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
  */
 class FindOneAndUpdate implements Executable, Explainable
 {
     public const RETURN_DOCUMENT_BEFORE = 1;
     public const RETURN_DOCUMENT_AFTER = 2;
 
-    private FindAndModify $findAndModify;
+    /** @var FindAndModify */
+    private $findAndModify;
 
     /**
      * Constructs a findAndModify command for updating a document.
@@ -54,14 +54,7 @@ class FindOneAndUpdate implements Executable, Explainable
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
      *
-     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
-     *    from BSON to PHP objects.
-     *
      *  * collation (document): Collation specification.
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
@@ -92,11 +85,6 @@ class FindOneAndUpdate implements Executable, Explainable
      *  * upsert (boolean): When true, a new document is created if no document
      *    matches the query. The default is false.
      *
-     *  * let (document): Map of parameter names and values. Values must be
-     *    constant or closed expressions that do not reference document fields.
-     *    Parameters can then be accessed as variables in an aggregate
-     *    expression context (e.g. "$$var").
-     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string       $databaseName   Database name
@@ -106,10 +94,10 @@ class FindOneAndUpdate implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, $filter, $update, array $options = [])
+    public function __construct($databaseName, $collectionName, $filter, $update, array $options = [])
     {
-        if (! is_document($filter)) {
-            throw InvalidArgumentException::expectedDocumentType('$filter', $filter);
+        if (! is_array($filter) && ! is_object($filter)) {
+            throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
         }
 
         if (! is_array($update) && ! is_object($update)) {
@@ -117,19 +105,23 @@ class FindOneAndUpdate implements Executable, Explainable
         }
 
         if (! is_first_key_operator($update) && ! is_pipeline($update)) {
-            throw new InvalidArgumentException('Expected update operator(s) or non-empty pipeline for $update');
+            throw new InvalidArgumentException('Expected an update document with operator as first key or a pipeline');
         }
 
-        if (isset($options['projection']) && ! is_document($options['projection'])) {
-            throw InvalidArgumentException::expectedDocumentType('"projection" option', $options['projection']);
+        $options += [
+            'returnDocument' => self::RETURN_DOCUMENT_BEFORE,
+            'upsert' => false,
+        ];
+
+        if (isset($options['projection']) && ! is_array($options['projection']) && ! is_object($options['projection'])) {
+            throw InvalidArgumentException::invalidType('"projection" option', $options['projection'], 'array or object');
         }
 
-        if (array_key_exists('returnDocument', $options) && ! is_integer($options['returnDocument'])) {
+        if (! is_integer($options['returnDocument'])) {
             throw InvalidArgumentException::invalidType('"returnDocument" option', $options['returnDocument'], 'integer');
         }
 
         if (
-            isset($options['returnDocument']) &&
             $options['returnDocument'] !== self::RETURN_DOCUMENT_AFTER &&
             $options['returnDocument'] !== self::RETURN_DOCUMENT_BEFORE
         ) {
@@ -140,16 +132,14 @@ class FindOneAndUpdate implements Executable, Explainable
             $options['fields'] = $options['projection'];
         }
 
-        if (isset($options['returnDocument'])) {
-            $options['new'] = $options['returnDocument'] === self::RETURN_DOCUMENT_AFTER;
-        }
+        $options['new'] = $options['returnDocument'] === self::RETURN_DOCUMENT_AFTER;
 
         unset($options['projection'], $options['returnDocument']);
 
         $this->findAndModify = new FindAndModify(
             $databaseName,
             $collectionName,
-            ['query' => $filter, 'update' => $update] + $options,
+            ['query' => $filter, 'update' => $update] + $options
         );
     }
 
@@ -157,6 +147,7 @@ class FindOneAndUpdate implements Executable, Explainable
      * Execute the operation.
      *
      * @see Executable::execute()
+     * @param Server $server
      * @return array|object|null
      * @throws UnsupportedException if collation or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -170,10 +161,11 @@ class FindOneAndUpdate implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
+     * @param Server $server
      * @return array
      */
-    public function getCommandDocument()
+    public function getCommandDocument(Server $server)
     {
-        return $this->findAndModify->getCommandDocument();
+        return $this->findAndModify->getCommandDocument($server);
     }
 }

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function allowDiskUseNotSupported()
     {
-        return new self('The "allowDiskUse" option is not supported by the server executing this operation');
+        return new static('The "allowDiskUse" option is not supported by the server executing this operation');
     }
 
     /**
@@ -39,7 +39,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function arrayFiltersNotSupported()
     {
-        return new self('Array filters are not supported by the server executing this operation');
+        return new static('Array filters are not supported by the server executing this operation');
     }
 
     /**
@@ -52,7 +52,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function collationNotSupported()
     {
-        return new self('Collations are not supported by the server executing this operation');
+        return new static('Collations are not supported by the server executing this operation');
     }
 
     /**
@@ -63,7 +63,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function commitQuorumNotSupported()
     {
-        return new self('The "commitQuorum" option is not supported by the server executing this operation');
+        return new static('The "commitQuorum" option is not supported by the server executing this operation');
     }
 
     /**
@@ -73,7 +73,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function explainNotSupported()
     {
-        return new self('Explain is not supported by the server executing this operation');
+        return new static('Explain is not supported by the server executing this operation');
     }
 
     /**
@@ -83,7 +83,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function hintNotSupported()
     {
-        return new self('Hint is not supported by the server executing this operation');
+        return new static('Hint is not supported by the server executing this operation');
     }
 
     /**
@@ -93,7 +93,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function readConcernNotSupported()
     {
-        return new self('Read concern is not supported by the server executing this command');
+        return new static('Read concern is not supported by the server executing this command');
     }
 
     /**
@@ -103,7 +103,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function readConcernNotSupportedInTransaction()
     {
-        return new self('The "readConcern" option cannot be specified within a transaction. Instead, specify it when starting the transaction.');
+        return new static('The "readConcern" option cannot be specified within a transaction. Instead, specify it when starting the transaction.');
     }
 
     /**
@@ -113,7 +113,7 @@ class UnsupportedException extends RuntimeException
      */
     public static function writeConcernNotSupported()
     {
-        return new self('Write concern is not supported by the server executing this command');
+        return new static('Write concern is not supported by the server executing this command');
     }
 
     /**
@@ -123,6 +123,6 @@ class UnsupportedException extends RuntimeException
      */
     public static function writeConcernNotSupportedInTransaction()
     {
-        return new self('The "writeConcern" option cannot be specified within a transaction. Instead, specify it when starting the transaction.');
+        return new static('The "writeConcern" option cannot be specified within a transaction. Instead, specify it when starting the transaction.');
     }
 }

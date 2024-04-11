@@ -16,11 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ]);         
         $_SESSION['login']['username'] = $user['username'];
         $_SESSION['login']['email'] = $user['email'];
-        $response = ['success' => true, 'data'=>$user];
+        $response = ['success' => true, 'data' => $user];
         header("HTTP/1.0 200 success");
     } else {
         $response = ['success' => false, 'message' => 'Đăng nhập thất bại. Vui lòng kiểm tra tên người dùng và mật khẩu.'];
-        header("HTTP/1.0 404 error");
+        header("HTTP/1.0 401 error");
     }
     header('Content-Type: application/json');
     echo json_encode($response);

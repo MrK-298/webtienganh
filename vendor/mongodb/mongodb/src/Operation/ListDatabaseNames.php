@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,12 +30,14 @@ use function array_column;
 /**
  * Operation for the ListDatabases command, returning only database names.
  *
+ * @api
  * @see \MongoDB\Client::listDatabaseNames()
- * @see https://mongodb.com/docs/manual/reference/command/listDatabases/#mongodb-dbcommand-dbcmd.listDatabases
+ * @see http://docs.mongodb.org/manual/reference/command/ListDatabases/
  */
 class ListDatabaseNames implements Executable
 {
-    private ListDatabasesCommand $listDatabases;
+    /** @var ListDatabasesCommand */
+    private $listDatabases;
 
     /**
      * Constructs a listDatabases command.
@@ -46,10 +48,6 @@ class ListDatabaseNames implements Executable
      *    based on the user privileges.
      *
      *    For servers < 4.0.5, this option is ignored.
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * filter (document): Query by which to filter databases.
      *
@@ -70,6 +68,8 @@ class ListDatabaseNames implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
+     * @param Server $server
+     * @return Iterator
      * @throws UnexpectedValueException if the command response was malformed
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
