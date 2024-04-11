@@ -7,29 +7,21 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT")
         $input_data = file_get_contents("php://input");
         $put_data = json_decode($input_data, true);
         $email = $put_data['email'];
-        $verificationCode = $put_data['verificationCode'];
-        $password = $put_data['password'];
+        $phone = $put_data['phone'];
+        $name = $put_data['name'];
         $user = $collection->findOne(['email' => $email]);
         if ($user) {
             $userId = $user['_id'];
-            $userCode = $user['verificationCode'];
             $filter = ['_id' => $userId];
-            if($userCode == $verificationCode)
-            {
-                $update = ['$set' => ['password' => password_hash($password, PASSWORD_DEFAULT)]]; 
-                $result = $collection->updateOne($filter, $update);
-                if ($result->getModifiedCount() > 0) {
-                    $response = ['success' => true, 'message' => 'Đổi mật khẩu thành công'];
-                    header("HTTP/1.0 200 success");
-                } else {
-                    $response = ['success' => false, 'message' => 'Lỗi'];
-                    header("HTTP/1.0 404 error");
-                }
-            }
-            else {
-                $response = ['success' => false, 'message' => 'Sai mã xác nhận'];
+            $update = ['$set' => ['email'=>$email,'phone'=>$phone,'name'=>$name]]; 
+            $result = $collection->updateOne($filter, $update);
+            if ($result->getModifiedCount() > 0) {
+                $response = ['success' => true, 'message' => 'Đổi thông tin thành công'];
+                header("HTTP/1.0 200 success");
+            } else {
+                $response = ['success' => false, 'message' => 'Lỗi'];
                 header("HTTP/1.0 404 error");
-            }
+            }         
         } else {
             $response = ['success' => false, 'message' => 'Không tìm thấy người dùng với email này!'];
             header("HTTP/1.0 404 error");

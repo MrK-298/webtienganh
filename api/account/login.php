@@ -31,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ]);         
         $_SESSION['login']['username'] = $user['username'];
         $_SESSION['login']['email'] = $user['email'];
-        $_SESSION['login']['image'] = $user['image'];
         $response = ['success' => true, 'data'=>$user];
         header('Location:../../views/home.php');
     } else {

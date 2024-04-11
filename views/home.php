@@ -99,6 +99,14 @@ session_start();
 												</ul>
 											</li>
 											<li><a href="contact.html">Contact Us</a></li>
+											<?php
+												if(isset($_SESSION['login']['username'])) {
+													echo '<a href="../views/profile.php?username=' . $_SESSION['login']['username'] . '">Profile</a>';
+
+												}else {
+													echo '<a href="loginview.php" class="btn">Login</a>';
+												}                                   
+                                    		?>          
 										</ul>
 									</nav>
 								</div>

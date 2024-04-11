@@ -7,7 +7,7 @@ window.onload = async function() {
         var phone = document.getElementById('phone').value;
         if(isValidVietnamesePhoneNumber(phone)==false)
         {
-            alert('Số điện thoại sai định dạng');
+            alert('số điện thoại sai định dạng. Vui lòng nhập lại.');
             event.preventDefault();
             return;
         }
