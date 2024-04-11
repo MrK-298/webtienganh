@@ -2,6 +2,15 @@ function changeProfile() {
     var email = document.getElementById('email').value;    
     var phone = document.getElementById('phone').value;    
     var name = document.getElementById('name').value;  
+    if(isValidVietnamesePhoneNumber(phone)==false)
+    {
+        alert('số điện thoại sai định dạng. Vui lòng nhập lại.');
+        return;
+    }
+    if (name.length < 8 || name.length > 30) {
+        alert('Họ và tên phải nằm trong 8 đến 30 ký tự');
+        return;
+    }
     fetch('http://localhost:8084/webtienganh/api/account/changeProfile.php', {
         method: 'PUT',
         headers: {

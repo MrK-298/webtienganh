@@ -21,15 +21,15 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label">Họ tên</label>
-                                    <input type="text" id="name" class="form-control mb-1">
+                                    <input type="text" id="name" class="form-control mb-1" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">E-mail</label>
-                                    <input type="text" id="email" class="form-control mb-1">
+                                    <input type="text" id="email" class="form-control mb-1" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Số điện thoại</label>
-                                    <input type="text" id="phone" class="form-control mb-1">
+                                    <input type="text" id="phone" class="form-control mb-1" required>
                                 </div>
                             </div>
                         </div>                      
