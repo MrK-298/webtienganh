@@ -37,9 +37,9 @@ window.onload = async function() {
             body: formData
         })
         .then(response => response.json())
-        .then(data => {
+        .then(async data => {
             if (data.success == true) {               
-                alert("Đăng ký tài khoản thành công");
+                await alert("Đăng ký tài khoản thành công");
                 window.location.href = '../views/loginview.php';
             } else {
                 alert(data.message,data.error);

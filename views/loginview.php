@@ -23,19 +23,19 @@
           <div class="form-content">
             <div class="login-form">
               <div class="title">Login</div>
-            <form action="../api/account/login.php" method="post">
+            <form id="login-form" method="post">
               <div class="input-boxes">
                 <div class="input-box">
                   <i class="fas fa-envelope"></i>
-                  <input type="text" name="username" placeholder="Nhập email của bạn" required>
+                  <input type="text" name="username" id="current-username" placeholder="Nhập email của bạn" required>
                 </div>
                 <div class="input-box">
                   <i class="fas fa-lock"></i>
-                  <input type="password" name="password" placeholder="Nhập mật khẩu của bạn" required>
+                  <input type="password" name="password" id="current-password" placeholder="Nhập mật khẩu của bạn" required>
                 </div>
                 <div class="text"><a href="../views/forgotpw.php">Quên mật khẩu?</a></div>
                 <div class="button input-box">
-                  <input type="submit" value="Đăng nhập">
+                  <input value="Đăng nhập" id="btn-login" type="button">
                 </div>
                 <div class="text sign-up-text">Bạn chủa có tài khoản? <label for="flip">Đăng ký ngay</label></div>
               </div>
@@ -81,5 +81,6 @@
     </div>
   </body>
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="../js/login.js"></script>
   <script src="../js/register.js"></script>
 </html>
