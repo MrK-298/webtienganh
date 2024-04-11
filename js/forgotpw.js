@@ -29,6 +29,14 @@ function changePassword(){
     var code = document.getElementById('verificationCode').value;    
     var password = document.getElementById('password').value; 
     var confirmPassword = document.getElementById('confirmpassword').value; 
+    if (code.length < 6) {
+        alert('Mã xác nhận phải trên 6 ký tự.');
+        return;
+    }     
+    if (password.length < 8) {
+        alert('Mật khẩu phải có ít nhất 8 ký tự.');
+        return;
+    }     
     if (password !== confirmPassword) {
         alert('Xác nhận mật khẩu không khớp. Vui lòng nhập lại.');
         return;
