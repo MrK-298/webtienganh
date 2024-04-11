@@ -50,6 +50,10 @@
                     <input type="text" name="username" id="username" placeholder="Nhập username" required>
                 </div>
                 <div class="input-box">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="name" id="name" placeholder="Nhập Họ và tên" required>
+                </div>
+                <div class="input-box">
                     <i class="fas fa-envelope"></i>
                     <input type="email" name="email" id="email" placeholder="Nhập email của bạn" required>
                 </div>

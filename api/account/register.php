@@ -5,6 +5,7 @@ $collection = connectToMongoDB("WebTiengAnh","User");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
+    $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirmpassword = $_POST['confirmpassword'];
@@ -14,7 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'username' => $username,
             'password' => password_hash($password, PASSWORD_DEFAULT),
             'email' => $email,
-            'verificationCode' => null
+            'verificationCode' => null,
+            'name' => $name
         ];
         header('Content-Type: application/json'); 
         try {

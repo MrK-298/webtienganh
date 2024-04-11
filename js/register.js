@@ -1,8 +1,14 @@
 window.onload = async function() {
     document.getElementById('signup-form').addEventListener('submit', function(event) {
         var username = document.getElementById('username').value;
+        var name = document.getElementById('name').value;
         var password = document.getElementById('password').value;
         var confirmPassword = document.getElementById('confirmpassword').value;
+        if (name.length < 8 && name.length > 30) {
+            alert('Họ và tên phải nằm trong 8 đến 30 ký tự');
+            event.preventDefault();
+            return;
+        }
         if (username.length < 6) {
             alert('username phải có ít nhất 6 ký tự.');
             event.preventDefault();
