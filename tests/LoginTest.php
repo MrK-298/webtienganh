@@ -1,81 +1,88 @@
 <?php
 require_once 'vendor/autoload.php';
+require_once 'services/loginService.php';
 use PHPUnit\Framework\TestCase;
 class LoginTest extends TestCase
 {
   public function testLoginSuccessWithUserName() {
-    $_SERVER["REQUEST_METHOD"] = "POST";
-    $post_data = [
-        'username' => 'binbb23',
-        'password' => 'khoibia123'
-    ];
-    $input_data = json_encode($post_data);    
-    ob_start();
-    file_put_contents('php://input', $input_data);
-    ob_end_clean();
-    
-    $this->assertTrue(verifyCredentials($post_data['username'], $post_data['password']));
+    $usernameOrEmail = 'binbb23';
+    $password = 'khoibia123';
+
+    $authenticationServiceMock = $this->getMockBuilder(AuthenticationService::class)
+                                      ->onlyMethods(array('verifyCredentials'))
+                                      ->getMock();
+
+    $authenticationServiceMock->expects($this->once())
+                             ->method('verifyCredentials')
+                             ->with($usernameOrEmail, $password)
+                             ->willReturn(true);
+
+    $result = $authenticationServiceMock->login($usernameOrEmail, $password);
+    $this->assertTrue($result);
   }
   public function testLoginSuccessWithEmail() {
-    $_SERVER["REQUEST_METHOD"] = "POST";
-    $post_data = [
-        'username' => 'binbb1324@gmail.com',
-        'password' => 'khoibia123'
-    ];
-    $input_data = json_encode($post_data);    
-    ob_start();
-    file_put_contents('php://input', $input_data);
-    ob_end_clean();
-    
-    $this->assertTrue(verifyCredentials($post_data['username'], $post_data['password']));
+    $usernameOrEmail = 'binbb1324@gmail.com';
+    $password = 'khoibia123';
+
+    $authenticationServiceMock = $this->getMockBuilder(AuthenticationService::class)
+                                      ->onlyMethods(array('verifyCredentials'))
+                                      ->getMock();
+
+    $authenticationServiceMock->expects($this->once())
+                             ->method('verifyCredentials')
+                             ->with($usernameOrEmail, $password)
+                             ->willReturn(true);
+
+    $result = $authenticationServiceMock->login($usernameOrEmail, $password);
+    $this->assertTrue($result);
   }
   public function testLoginFailureWithWrongUsername() {
-      $_SERVER["REQUEST_METHOD"] = "POST";
-      $post_data = [
-          'username' => 'binbb2345',
-          'password' => 'khoibia123'
-      ];
-      $input_data = json_encode($post_data);
+    $usernameOrEmail = 'binbb234';
+    $password = 'khoibia123';
 
-      ob_start();
-      file_put_contents('php://input', $input_data);
-      ob_end_clean();
-      
-      $this->assertFalse(verifyCredentials($post_data['username'], $post_data['password']));   
+    $authenticationServiceMock = $this->getMockBuilder(AuthenticationService::class)
+                                      ->onlyMethods(array('verifyCredentials'))
+                                      ->getMock();
+
+    $authenticationServiceMock->expects($this->once())
+                             ->method('verifyCredentials')
+                             ->with($usernameOrEmail, $password)
+                             ->willReturn(null);
+
+    $result = $authenticationServiceMock->login($usernameOrEmail, $password);
+    $this->assertFalse($result);
   }
   public function testLoginFailureWithWrongEmail() {
-    $_SERVER["REQUEST_METHOD"] = "POST";
-    $post_data = [
-        'username' => 'binbb23@gmail.com',
-        'password' => 'khoibia123'
-    ];
-    $input_data = json_encode($post_data);
+    $usernameOrEmail = 'binbb23@gmail.com';
+    $password = 'khoibia123';
 
-    ob_start();
-    file_put_contents('php://input', $input_data);
-    ob_end_clean();
-    
-    $this->assertFalse(verifyCredentials($post_data['username'], $post_data['password']));   
+    $authenticationServiceMock = $this->getMockBuilder(AuthenticationService::class)
+                                      ->onlyMethods(array('verifyCredentials'))
+                                      ->getMock();
+
+    $authenticationServiceMock->expects($this->once())
+                             ->method('verifyCredentials')
+                             ->with($usernameOrEmail, $password)
+                             ->willReturn(null);
+
+    $result = $authenticationServiceMock->login($usernameOrEmail, $password);
+    $this->assertFalse($result);
 }
   public function testLoginFailureWithWrongPassword() {
-    $_SERVER["REQUEST_METHOD"] = "POST";
-    $post_data = [
-        'username' => 'binbb2345',
-        'password' => 'khoibia123'
-    ];
-    $input_data = json_encode($post_data);
+    $usernameOrEmail = 'binbb23';
+    $password = 'khoibia12345';
 
-    ob_start();
-    file_put_contents('php://input', $input_data);
-    ob_end_clean();
-    
-    $this->assertFalse(verifyCredentials($post_data['username'], $post_data['password']));   
-}
-}
-function verifyCredentials($usernameOrEmail, $password) {
-  if (($usernameOrEmail == "binbb23" || $usernameOrEmail == "binbb1324@gmail.com") && $password == 'khoibia123') {      
-      return true;
+    $authenticationServiceMock = $this->getMockBuilder(AuthenticationService::class)
+                                      ->onlyMethods(array('verifyCredentials'))
+                                      ->getMock();
+
+    $authenticationServiceMock->expects($this->once())
+                             ->method('verifyCredentials')
+                             ->with($usernameOrEmail, $password)
+                             ->willReturn(null);
+
+    $result = $authenticationServiceMock->login($usernameOrEmail, $password);
+    $this->assertFalse($result);
   }
-  return false;
 }
 

@@ -1,5 +1,7 @@
 function changeProfile() {  
-    var email = document.getElementById('email').value;    
+    var email = document.getElementById('email').value;  
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');   
     var phone = document.getElementById('phone').value;    
     var name = document.getElementById('name').value;  
     if(isValidVietnamesePhoneNumber(phone)==false)
@@ -16,7 +18,7 @@ function changeProfile() {
         headers: {
             'Content-Type': 'application/json' 
         },
-        body: JSON.stringify({ email: email, phone:phone, name:name })
+        body: JSON.stringify({ email: email, phone:phone, name:name,username:username })
     })
     .then(response => response.json())
     .then(data => {

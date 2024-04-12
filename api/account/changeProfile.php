@@ -7,25 +7,21 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT")
         $input_data = file_get_contents("php://input");
         $put_data = json_decode($input_data, true);
         $email = $put_data['email'];
+        $username = $put_data['username'];
         $phone = $put_data['phone'];
         $name = $put_data['name'];
-        $user = $collection->findOne(['email' => $email]);
-        if ($user) {
-            $userId = $user['_id'];
-            $filter = ['_id' => $userId];
-            $update = ['$set' => ['email'=>$email,'phone'=>$phone,'name'=>$name]]; 
-            $result = $collection->updateOne($filter, $update);
-            if ($result->getModifiedCount() > 0) {
-                $response = ['success' => true, 'message' => 'Đổi thông tin thành công'];
-                header("HTTP/1.0 200 success");
-            } else {
-                $response = ['success' => false, 'message' => 'Lỗi'];
-                header("HTTP/1.0 404 error");
-            }         
+        $user = $collection->findOne(['username' => $username]);
+        $userId = $user['_id'];
+        $filter = ['_id' => $userId];
+        $update = ['$set' => ['email'=>$email,'phone'=>$phone,'name'=>$name]]; 
+        $result = $collection->updateOne($filter, $update);
+        if ($result->getModifiedCount() > 0) {
+            $response = ['success' => true, 'message' => 'Đổi thông tin thành công'];
+            header("HTTP/1.0 200 success");
         } else {
-            $response = ['success' => false, 'message' => 'Không tìm thấy người dùng với email này!'];
+            $response = ['success' => false, 'message' => 'Lỗi'];
             header("HTTP/1.0 404 error");
-        }
+        }         
         echo json_encode($response);
     }
     catch (Exception $e) {

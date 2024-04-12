@@ -114,8 +114,8 @@ session_start();
 								<div class="get-quote">
                                     <?php
                                       if(isset($_SESSION['login']['username'])) {
-										echo "Xin chào <b>{$_SESSION['login']['username']}</b>";
-										echo '<a href="../function/logout.php" class="btn">Logout</a>';
+										echo "<div>Xin chào <b>{$_SESSION['login']['username']}</b></div>";
+										echo '<div><a href="../function/logout.php" class="btn">Logout</a></div>';
                                        }else {
                                         echo '<a href="loginview.php" class="btn">Login</a>';
                                        }                                   
