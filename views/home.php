@@ -104,7 +104,7 @@ session_start();
 													echo '<li><a href="../views/profile.php?username=' . $_SESSION['login']['username'] . '">Profile</a></li>';
 													echo '<li><a href="../views/listexamdone.php?username=' . $_SESSION['login']['username'] . '">DoneExam</a></li>';
 												}                                 
-                                    		?>          
+                                    		?>        
 										</ul>
 									</nav>
 								</div>
@@ -132,7 +132,7 @@ session_start();
 		
 		<!-- Slider Area -->
 		<section class="slider">
-			<div class="hero-slider">
+			<div class="hero-slider1">
 				<!-- Start Single Slider -->
 				<div class="single-slider" style="background-image:url('../images/nen.jpg')">
 					<div class="container">
@@ -320,7 +320,7 @@ session_start();
 		</footer>
 		<!--/ End Footer Area -->
 	
-
+									
 		<!-- jquery Min JS -->
         <script src="../homejs/jquery.min.js"></script>
 		<!-- jquery Migrate JS -->
@@ -361,5 +361,25 @@ session_start();
 		<script src="../homejs/bootstrap.min.js"></script>
 		<!-- Main JS -->
 		<script src="../homejs/main.js"></script>
+		<script>
+			$(".hero-slider1").owlCarousel({
+			loop:true,
+			autoplay:true,
+			smartSpeed: 500,
+			autoplayTimeout:3500,
+			singleItem: true,
+			autoplayHoverPause:true,
+			items:1,
+			nav:true,
+			navText: ['<i class="fas fa-angle-left" aria-hidden="true"></i>', '<i class="fas fa-angle-right" aria-hidden="true"></i>'],
+			dots:false,
+			});
+			$.scrollUp({
+			scrollText: '<span><i class="fas fa-angle-up"></i></span>',
+			easingType: 'easeInOutExpo',
+			scrollSpeed: 900,
+			animation: 'fade'
+		}); 
+		</script>
     </body>
 </html>

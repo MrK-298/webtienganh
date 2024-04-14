@@ -275,7 +275,7 @@ Version:	1.1
 			Scroll Up JS
 		=====================*/
 		$.scrollUp({
-			scrollText: '<span><i class="fa fa-angle-up"></i></span>',
+			scrollText: '<span><i class="fas fa-angle-up"></i></span>',
 			easingType: 'easeInOutExpo',
 			scrollSpeed: 900,
 			animation: 'fade'
