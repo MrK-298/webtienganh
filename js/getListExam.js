@@ -33,8 +33,7 @@ window.onload = async function getDetail() {
                 };
                 cell4.appendChild(button1);
                 cell4.appendChild(button2);
-            });
-            
+            });           
         });
     }); 
 }

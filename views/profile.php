@@ -38,7 +38,7 @@
                 </div>
                 <div class="text-right mt-3" style="padding-bottom: 50px;">
                     <button type="button" class="btn btn-primary" id = "save">Save changes</button>&nbsp;
-                    <button type="button" class="btn btn-default">Cancel</button>
+                    <a href="home.php" class="button" class="btn btn-default">Cancel</a>
                 </div>
             </div>
         </div>
