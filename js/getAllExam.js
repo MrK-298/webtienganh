@@ -27,7 +27,6 @@ window.onload = async function() {
             singleInfoDiv.addEventListener('click',function(){
                 const emailElement = document.getElementById("email");
                 const email = emailElement ? emailElement.getAttribute("value") : null;
-
                 console.log(email);
                 if(email)
                 {                

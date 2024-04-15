@@ -5,6 +5,12 @@ async function register() {
         var password = document.getElementById('password').value;
         var confirmPassword = document.getElementById('confirmpassword').value;
         var phone = document.getElementById('phone').value;
+        if(isValidGmail(email)==false)
+        {
+            alert('gmail sai định dạng');
+            event.preventDefault();
+            return;
+        }
         if(isValidVietnamesePhoneNumber(phone)==false)
         {
             alert('số điện thoại sai định dạng. Vui lòng nhập lại.');
@@ -53,6 +59,10 @@ async function register() {
 function isValidVietnamesePhoneNumber(phoneNumber) {
     var regex = /^(0|\+84)(\d{9,10})$/;
     return regex.test(phoneNumber);
+}
+function isValidGmail(email) {
+    var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return regex.test(email);
 }
 const btn = document.getElementById('btn-register');
 btn.addEventListener('click', register);

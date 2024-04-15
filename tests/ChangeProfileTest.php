@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 class ChangeProfileTest extends TestCase
 {
   public function testChangeProfileSuccess() {
+    $username= "binbb23";
     $email = "binbb1334@gmail.com";
     $name = "Nguyễn Hoàng Khôi";
     $phone = "0932171448";
@@ -14,13 +15,14 @@ class ChangeProfileTest extends TestCase
 
     $changeProfileServiceMock->expects($this->once())
                               ->method('verifyCredentials')
-                              ->with($email,$phone,$name)
+                              ->with($email,$phone,$name,$username)
                               ->willReturn(true);
 
-    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name);
+    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name,$username);
     $this->assertTrue($result);
   }
   public function testChangeProfileWrongEmail() {
+    $username= "binbb23";
     $email = "binbb1324gmail.com";
     $name = "Nguyễn Hoàng Khôi";
     $phone = "0932171448";
@@ -30,13 +32,14 @@ class ChangeProfileTest extends TestCase
 
     $changeProfileServiceMock->expects($this->once())
                               ->method('verifyCredentials')
-                              ->with($email,$phone,$name)
+                              ->with($email,$phone,$name,$username)
                               ->willReturn(null);
 
-    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name);
+    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name,$username);
     $this->assertFalse($result);
   } 
   public function testChangeProfileWrongPhone() {
+    $username= "binbb23";
     $email = "binbb1324@gmail.com";
     $name = "Nguyễn Hoàng Khôi";
     $phone = "093217144";
@@ -46,13 +49,14 @@ class ChangeProfileTest extends TestCase
 
     $changeProfileServiceMock->expects($this->once())
                               ->method('verifyCredentials')
-                              ->with($email,$phone,$name)
+                              ->with($email,$phone,$name,$username)
                               ->willReturn(null);
 
-    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name);
+    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name,$username);
     $this->assertFalse($result);
   }
   public function testChangeProfileWrongName() {
+    $username= "binbb23";
     $email = "binbb1324@gmail.com";
     $name = "Nguyễn";
     $phone = "0932171448";
@@ -62,13 +66,14 @@ class ChangeProfileTest extends TestCase
 
     $changeProfileServiceMock->expects($this->once())
                               ->method('verifyCredentials')
-                              ->with($email,$phone,$name)
+                              ->with($email,$phone,$name,$username)
                               ->willReturn(null);
 
-    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name);
+    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name,$username);
     $this->assertFalse($result);
   }
   public function testNoChangeProfile() {
+    $username= "binbb23";
     $email = "binbb1324@gmail.com";
     $name = "Nguyễn Hoàng Khôi";
     $phone = "0932171448";
@@ -78,10 +83,10 @@ class ChangeProfileTest extends TestCase
 
     $changeProfileServiceMock->expects($this->once())
                               ->method('verifyCredentials')
-                              ->with($email,$phone,$name)
+                              ->with($email,$phone,$name,$username)
                               ->willReturn(null);
 
-    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name);
+    $result = $changeProfileServiceMock->changeProfile($email,$phone,$name,$username);
     $this->assertFalse($result);
   }
 } 

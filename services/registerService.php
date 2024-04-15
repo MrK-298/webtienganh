@@ -9,7 +9,11 @@
     }
 
     public function verifyCredentials($username,$password,$email,$phone,$name) {
-        if($username){
+        global $collection;
+        $user = $collection->findOne([         
+                ['username' => $username]
+        ]);
+        if($user){
             return true;
         }
         return false;
