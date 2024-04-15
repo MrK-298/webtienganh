@@ -4,6 +4,12 @@ function changeProfile() {
     const username = urlParams.get('username');   
     var phone = document.getElementById('phone').value;    
     var name = document.getElementById('name').value;  
+    if(isValidGmail(email)==false)
+    {
+        alert('gmail sai định dạng');
+        event.preventDefault();
+        return;
+    }
     if(isValidVietnamesePhoneNumber(phone)==false)
     {
         alert('số điện thoại sai định dạng. Vui lòng nhập lại.');
@@ -35,6 +41,10 @@ function changeProfile() {
 function isValidVietnamesePhoneNumber(phoneNumber) {
     var regex = /^(0|\+84)(\d{9,10})$/;
     return regex.test(phoneNumber);
+}
+function isValidGmail(email) {
+    var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return regex.test(email);
 }
 const submitButton = document.getElementById('save');
 submitButton.addEventListener('click', changeProfile);
